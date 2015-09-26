@@ -1,12 +1,24 @@
 package com.themillhousegroup.bombardier
 
-object WeatherStation {
-  val weatherStationFileName = "IDY2126.dat"
-  private val weatherStationSource = scala.io.Source.fromFile(weatherStationFileName)
-  private val allStations = weatherStationSource.getLines.drop(1).map(stringToWeatherStation)
+import java.io.File
 
-  def stringToWeatherStation(s:String):WeatherStation = {
-    WeatherStation(1, "name", "code", 1D, 2D, "VIC")
+object WeatherStation {
+  val weatherStationFileName = "IDY02126.dat"
+  private val weatherStationStream = getClass.getResourceAsStream("/" + weatherStationFileName)
+  private[bombardier] val weatherStationSource = scala.io.Source.fromInputStream(weatherStationStream)
+  private[bombardier] val allStations = weatherStationSource.getLines.drop(1).map(stringToWeatherStation).toSeq
+
+  private def stringToWeatherStation(s: String): WeatherStation = {
+    def tidy(qs: String) = qs.replace(""""""", "").trim
+
+    val parts = s.split(',')
+    WeatherStation(
+      tidy(parts(0)).toInt,
+      tidy(parts(1)),
+      tidy(parts(2)),
+      parts(3).toDouble,
+      parts(4).toDouble,
+      tidy(parts(7)))
   }
 }
 
