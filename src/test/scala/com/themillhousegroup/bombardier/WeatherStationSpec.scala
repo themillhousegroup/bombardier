@@ -14,7 +14,7 @@ class WeatherStationSpec extends Specification {
     }
 
     "correctly interpret records from the BOM data file" in {
-      val expected = WeatherStation(1006, "WYNDHAM AIR  PORT", "YWYM", -15.51D, 128.1503D, "WA")
+      val expected = WeatherStation(1006, "WYNDHAM AIRPORT", "YWYM", -15.51D, 128.1503D, "WA")
       WeatherStation.allStations.head must beEqualTo(expected)
     }
   }
