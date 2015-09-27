@@ -8,10 +8,13 @@ object WeatherStation {
   private[bombardier] val weatherStationSource = scala.io.Source.fromInputStream(weatherStationStream)
   private[bombardier] val allStations = weatherStationSource.getLines.drop(1).map(stringToWeatherStation).toSeq
 
+  lazy val byId: Map[Int, WeatherStation] = allStations.map(ws => ws.id -> ws).toMap
+
   private def stringToWeatherStation(s: String): WeatherStation = {
     def tidy(qs: String) = qs.replace(""""""", "").trim
 
     val parts = s.split(',')
+
     WeatherStation(
       tidy(parts(0)).toInt,
       tidy(parts(1)),
