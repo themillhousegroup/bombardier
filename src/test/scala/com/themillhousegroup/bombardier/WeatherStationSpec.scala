@@ -28,6 +28,14 @@ class WeatherStationSpec extends Specification {
       WeatherStation.byName("CENTURY MINE") must beEqualTo(expected)
     }
 
+    "be able to look up a weather station by its name and state" in {
+      val expectedNsw = WeatherStation(67105, "RICHMOND AP", "YSRI", -33.6004, 150.7761, "NSW")
+      WeatherStation.byNameAndState("RICHMOND AP" -> "NSW") must beEqualTo(expectedNsw)
+
+      val expectedQld = WeatherStation(30161, "RICHMOND AP", "YRMD", -20.7017, 143.1167, "QLD")
+      WeatherStation.byNameAndState("RICHMOND AP" -> "QLD") must beEqualTo(expectedQld)
+    }
+
     "be able to look up a weather station by its code" in {
       val expected = WeatherStation(33208, "ROSSLYN BAY NTC", "ROSS", -23.161, 150.7901, "QLD")
       WeatherStation.byCode("ROSS") must beEqualTo(expected)

@@ -10,7 +10,13 @@ object WeatherStation {
 
   lazy val byId: Map[Int, WeatherStation] = allStations.map(ws => ws.id -> ws).toMap
 
+  /**
+   * Be aware that there ARE duplicate-named weather stations - e.g. "RICHMOND AP" -
+   * which exists in both NSW and QLD. For safety, use byNameAndState!
+   */
   lazy val byName: Map[String, WeatherStation] = allStations.map(ws => ws.name -> ws).toMap
+
+  lazy val byNameAndState: Map[(String, String), WeatherStation] = allStations.map(ws => (ws.name -> ws.state) -> ws).toMap
 
   lazy val byCode: Map[String, WeatherStation] = allStations.map(ws => ws.code -> ws).toMap
 
