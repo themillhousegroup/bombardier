@@ -10,9 +10,9 @@ object WeatherStation {
 
   lazy val byId: Map[Int, WeatherStation] = allStations.map(ws => ws.id -> ws).toMap
 
-  lazy val byName: Map[Int, WeatherStation] = allStations.map(ws => ws.name -> ws).toMap
+  lazy val byName: Map[String, WeatherStation] = allStations.map(ws => ws.name -> ws).toMap
 
-  lazy val byCode: Map[Int, WeatherStation] = allStations.map(ws => ws.code -> ws).toMap
+  lazy val byCode: Map[String, WeatherStation] = allStations.map(ws => ws.code -> ws).toMap
 
   private def stringToWeatherStation(s: String): WeatherStation = {
     def tidy(qs: String) = qs.replace(""""""", "").trim

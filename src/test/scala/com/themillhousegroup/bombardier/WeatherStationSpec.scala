@@ -23,5 +23,14 @@ class WeatherStationSpec extends Specification {
       WeatherStation.byId.get(9021) must beSome(expected)
     }
 
+    "be able to look up a weather station by its name" in {
+      val expected = WeatherStation(29167, "CENTURY MINE", "YCNY", -18.7569, 138.7056, "QLD")
+      WeatherStation.byName("CENTURY MINE") must beEqualTo(expected)
+    }
+
+    "be able to look up a weather station by its code" in {
+      val expected = WeatherStation(33208, "ROSSLYN BAY NTC", "ROSS", -23.161, 150.7901, "QLD")
+      WeatherStation.byCode("ROSS") must beEqualTo(expected)
+    }
   }
 }
