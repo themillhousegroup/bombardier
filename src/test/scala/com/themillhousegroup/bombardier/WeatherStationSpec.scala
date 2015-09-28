@@ -17,5 +17,11 @@ class WeatherStationSpec extends Specification {
       val expected = WeatherStation(1006, "WYNDHAM AIRPORT", "YWYM", -15.51D, 128.1503D, "WA")
       WeatherStation.allStations.head must beEqualTo(expected)
     }
+
+    "be able to look up a weather station by its ID" in {
+      val expected = WeatherStation(9021, "PERTH AIRPORT", "YPPH", -31.9275, 115.9764, "WA")
+      WeatherStation.byId.get(9021) must beSome(expected)
+    }
+
   }
 }
