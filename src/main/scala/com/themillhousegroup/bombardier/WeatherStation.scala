@@ -18,7 +18,11 @@ object WeatherStation {
 
   lazy val byNameAndState: Map[(String, String), WeatherStation] = allStations.map(ws => (ws.name -> ws.state) -> ws).toMap
 
-  lazy val byCode: Map[String, WeatherStation] = allStations.map(ws => ws.code -> ws).toMap
+  /**
+   * Be aware that there are many weather stations that report the code "AAAA" so
+   * this map deliberately has those overloaded cases removed - use the ID instead
+   */
+  lazy val byCode: Map[String, WeatherStation] = allStations.map(ws => ws.code -> ws).toMap - "AAAA"
 
   private def stringToWeatherStation(s: String): WeatherStation = {
     def tidy(qs: String) = qs.replace(""""""", "").trim

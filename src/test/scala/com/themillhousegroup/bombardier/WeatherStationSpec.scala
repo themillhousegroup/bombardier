@@ -40,5 +40,9 @@ class WeatherStationSpec extends Specification {
       val expected = WeatherStation(33208, "ROSSLYN BAY NTC", "ROSS", -23.161, 150.7901, "QLD")
       WeatherStation.byCode("ROSS") must beEqualTo(expected)
     }
+
+    "be unable to look up a weather station by its code if that code is the overloaded 'AAAA'" in {
+      WeatherStation.byCode.get("AAAA") must beNone
+    }
   }
 }
