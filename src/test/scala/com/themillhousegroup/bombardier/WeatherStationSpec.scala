@@ -61,5 +61,13 @@ class WeatherStationSpec extends Specification {
       val expectedThird = WeatherStation(86068, "VIEWBANK AWS", "VBK", -37.7408, 145.0972, "95874", "VIC")
       WeatherStation.byLatLong(-37.7540674, 145.0012255).take(3) must beEqualTo(Seq(expectedFirst, expectedSecond, expectedThird))
     }
+
+    "Correctly calculate the most distant WeatherStations from a lat-long" in {
+      val expectedFirst = WeatherStation(66212, "SYDNEY OLYMPIC", "HOM", -33.8338, 151.0718, "95765", "NSW")
+      val expectedLast = WeatherStation(300001, "MAWSON", "MAWS", -67.6017, 62.8753, "89564", "TAS")
+      val stations = WeatherStation.byLatLong(-33.8338, 151.0718)
+      stations.head must beEqualTo(expectedFirst)
+      stations.last must beEqualTo(expectedLast)
+    }
   }
 }
