@@ -44,6 +44,7 @@ object WeatherStation {
       tidy(parts(2)),
       parts(3).toDouble,
       parts(4).toDouble,
+      tidy(parts(6)),
       tidy(parts(7)))
   }
 }
@@ -58,5 +59,6 @@ case class WeatherStation(
   code: String,
   latitude: Double,
   longitude: Double,
+  bomUrlSuffix: String,
   state: String)
 
