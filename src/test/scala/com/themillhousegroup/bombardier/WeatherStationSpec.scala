@@ -44,5 +44,22 @@ class WeatherStationSpec extends Specification {
     "be unable to look up a weather station by its code if that code is the overloaded 'AAAA'" in {
       WeatherStation.byCode.get("AAAA") must beNone
     }
+
+    "be able to find the closest WeatherStation for an exact lat-long match" in {
+      val expected = WeatherStation(76031, "MILDURA", "YMIA", -34.2358, 142.0867, "VIC")
+      WeatherStation.byLatLong(-34.2358, 142.0867).head must beEqualTo(expected)
+    }
+
+    "be able to find the closest WeatherStation for a very close lat-long difference" in {
+      val expected = WeatherStation(86351, "BUNDOORA", "BUND", -37.7163, 145.0453, "VIC")
+      WeatherStation.byLatLong(-37.7540674, 145.0012255).head must beEqualTo(expected)
+    }
+
+    "Correctly order the closest WeatherStations for a lat-long" in {
+      val expectedFirst = WeatherStation(86351, "BUNDOORA", "BUND", -37.7163, 145.0453, "VIC")
+      val expectedSecond = WeatherStation(86338, "MELBOURNE (OLYM", "MBOP", -37.8255, 144.9816, "VIC")
+      val expectedThird = WeatherStation(86068, "VIEWBANK AWS", "VBK", -37.7408, 145.0972, "VIC")
+      WeatherStation.byLatLong(-37.7540674, 145.0012255).take(3) must beEqualTo(Seq(expectedFirst, expectedSecond, expectedThird))
+    }
   }
 }

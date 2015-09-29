@@ -18,11 +18,20 @@ object WeatherStation {
 
   lazy val byNameAndState: Map[(String, String), WeatherStation] = allStations.map(ws => (ws.name -> ws.state) -> ws).toMap
 
+  //	private lazy val sortedByLatitude:Seq[WeatherStation] = allStations.sortBy(_.latitude)
+
   /**
    * Be aware that there are many weather stations that report the code "AAAA" so
    * this map deliberately has those overloaded cases removed - use the ID instead
    */
   lazy val byCode: Map[String, WeatherStation] = allStations.map(ws => ws.code -> ws).toMap - "AAAA"
+
+  /** Returns the `numberToReturn` weather stations closest (numerically) to the target lat/long */
+  def byLatLong(latitude: Double, longitude: Double): Seq[WeatherStation] = {
+    allStations.sortBy { ws =>
+      Math.abs(ws.latitude - latitude) + Math.abs(ws.longitude - longitude)
+    }
+  }
 
   private def stringToWeatherStation(s: String): WeatherStation = {
     def tidy(qs: String) = qs.replace(""""""", "").trim
