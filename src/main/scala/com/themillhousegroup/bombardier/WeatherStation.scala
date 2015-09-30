@@ -44,7 +44,7 @@ object WeatherStation {
       tidy(parts(2)),
       parts(3).toDouble,
       parts(4).toDouble,
-      parts(5).toInt,
+      tidy(parts(5)).toInt,
       tidy(parts(6)),
       tidy(parts(7)))
   }
