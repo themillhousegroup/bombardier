@@ -28,10 +28,10 @@ object ObservationReads {
     (JsPath \ "apparent_t").read[Double] and
     (JsPath \ "cloud").read[String] and
     (JsPath \ "cloud_base_m").readNullable[Int] and
-    (JsPath \ "cloud_oktas").read[Int] and
+    (JsPath \ "cloud_oktas").readNullable[Int] and
     (JsPath \ "air_temp").read[Double] and
     (JsPath \ "dewpt").read[Double] and
-    (JsPath \ "press").read[Double] and
+    (JsPath \ "press").readNullable[Double] and
     (JsPath \ "rel_hum").read[Int] and
     (JsPath \ "weather").read[String] and
     (JsPath \ "wind_dir").read[String] and
@@ -48,10 +48,10 @@ case class Observation(
   apparentTemperature: Double,
   cloud: String,
   cloudBaseMetres: Option[Int],
-  cloudOktas: Int,
+  cloudOktas: Option[Int],
   airTemperature: Double,
   dewPoint: Double,
-  barometricPressure: Double,
+  barometricPressure: Option[Double],
   relativeHumidity: Int,
   weather: String,
   windDirection: String,

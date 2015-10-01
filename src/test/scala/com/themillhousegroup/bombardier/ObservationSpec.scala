@@ -45,8 +45,8 @@ class ObservationSpec extends Specification {
 			}
 """
 
-  val jsonWithNullPressureAndNoWeather = """
-{
+  val jsonWithNullValuesString = """
+		{
 				"sort_order": 0,
 				"wmo": 95835,
 				"name": "Longerenong",
@@ -93,6 +93,10 @@ class ObservationSpec extends Specification {
     "be able to convert a Play JSON object to an Observation instance" in {
       val js = Json.parse(rawJsonString)
       Observation.fromJson(js) must not beNull
+    }
+
+    "be able to handle null JSON fields in an Observation instance" in {
+      Observation.fromJsonString(jsonWithNullValuesString) must not beNull
     }
 
   }
