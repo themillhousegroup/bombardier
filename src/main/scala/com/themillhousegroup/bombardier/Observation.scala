@@ -19,3 +19,9 @@ case class Observation(
   windDirection: String,
   windSpeedKmh: Int,
   windSpeedKnots: Int)
+
+object Observation {
+  def fromJson(jsonString: String): Observation = {
+    null
+  }
+}
