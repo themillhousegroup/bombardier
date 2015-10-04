@@ -26,7 +26,7 @@ object WeatherStation {
    */
   lazy val byCode: Map[String, WeatherStation] = allStations.map(ws => ws.code -> ws).toMap - "AAAA"
 
-  /** Returns the `numberToReturn` weather stations closest (numerically) to the target lat/long */
+  /** Returns all weather stations sorted by (numerical) proximity to the target lat/long */
   def byLatLong(latitude: Double, longitude: Double): Seq[WeatherStation] = {
     allStations.sortBy { ws =>
       Math.abs(ws.latitude - latitude) + Math.abs(ws.longitude - longitude)
