@@ -25,14 +25,14 @@ object ObservationReads {
 
   implicit val observationReads: Reads[Observation] = (
     (JsPath \ "aifstime_utc").read[Long](LongFromString) and
-    (JsPath \ "apparent_t").read[Double] and
+    (JsPath \ "apparent_t").readNullable[Double] and
     (JsPath \ "cloud").read[String] and
     (JsPath \ "cloud_base_m").readNullable[Int] and
     (JsPath \ "cloud_oktas").readNullable[Int] and
-    (JsPath \ "air_temp").read[Double] and
-    (JsPath \ "dewpt").read[Double] and
+    (JsPath \ "air_temp").readNullable[Double] and
+    (JsPath \ "dewpt").readNullable[Double] and
     (JsPath \ "press").readNullable[Double] and
-    (JsPath \ "rel_hum").read[Int] and
+    (JsPath \ "rel_hum").readNullable[Int] and
     (JsPath \ "weather").read[String] and
     (JsPath \ "wind_dir").read[String] and
     (JsPath \ "wind_spd_kmh").read[Int] and
@@ -45,14 +45,14 @@ object ObservationReads {
  */
 case class Observation(
   dateTimeUtcMillis: Long,
-  apparentTemperature: Double,
+  apparentTemperature: Option[Double],
   cloud: String,
   cloudBaseMetres: Option[Int],
   cloudOktas: Option[Int],
-  airTemperature: Double,
-  dewPoint: Double,
+  airTemperature: Option[Double],
+  dewPoint: Option[Double],
   barometricPressure: Option[Double],
-  relativeHumidity: Int,
+  relativeHumidity: Option[Int],
   weather: String,
   windDirection: String,
   windSpeedKmh: Int,
