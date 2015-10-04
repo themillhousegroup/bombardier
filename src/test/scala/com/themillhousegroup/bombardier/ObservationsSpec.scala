@@ -5,6 +5,20 @@ import play.api.libs.json._
 
 class ObservationsSpec extends Specification {
 
+  "Observations" should {
+
+    "be able to parse a full BOM JSON file" in {
+      Observations.fromJsonString(fullJsonString) must haveLength(3)
+    }
+
+    "be able to parse entries in the JSON file" in {
+      val firstOb = Observations.fromJsonString(fullJsonString).head
+
+      firstOb.windSpeedKmh must beEqualTo(17)
+      firstOb.windDirection must beEqualTo("WSW")
+    }
+  }
+
   // Abbreviated from http://www.bom.gov.au/fwo/IDV60801/IDV60801.94906.json
   val fullJsonString = """
   {
@@ -146,11 +160,4 @@ class ObservationsSpec extends Specification {
     }
 """
 
-  "Observations" should {
-
-    "be able to parse a full BOM JSON file" in {
-
-      Observations.fromJsonString(fullJsonString) must not beNull
-    }
-  }
 }
