@@ -1,6 +1,7 @@
 package com.themillhousegroup.bombardier
 
 import play.api.libs.json.{ JsValue, Json }
+import scala.concurrent.Future
 
 object Bombardier {
 
@@ -11,7 +12,7 @@ object Bombardier {
    * If there is no observation for that exact time, the closest-in-time available
    * observation(s) are returned (as per observationsFor(WeatherStation, Long) )
    */
-  def observationsFor(latitude: Double, longitude: Double, dateUtcMillis: Long): Seq[Observation] = {
+  def observationsFor(latitude: Double, longitude: Double, dateUtcMillis: Long): Future[Seq[Observation]] = {
     val closestStation = WeatherStation.byLatLong(latitude, longitude).head
     observationsFor(closestStation, dateUtcMillis)
   }
@@ -21,7 +22,7 @@ object Bombardier {
    * If there is no observation for that exact time, the closest-in-time available
    * observation(s) are returned
    */
-  def observationsFor(station: WeatherStation, dateUtcMillis: Long): Seq[Observation] = {
+  def observationsFor(station: WeatherStation, dateUtcMillis: Long): Future[Seq[Observation]] = {
     null
   }
 
@@ -29,7 +30,7 @@ object Bombardier {
    * Finds weather observations for the given latitude/longitude in the given time window (inclusive).
    * If there is no observation in that window, the returned Seq will be empty.
    */
-  def observationsFor(latitude: Double, longitude: Double, startDateUtcMillis: Long, endDateUtcMillis: Long): Seq[Observation] = {
+  def observationsFor(latitude: Double, longitude: Double, startDateUtcMillis: Long, endDateUtcMillis: Long): Future[Seq[Observation]] = {
     val closestStation = WeatherStation.byLatLong(latitude, longitude).head
     observationsFor(closestStation, startDateUtcMillis, endDateUtcMillis)
   }
@@ -38,7 +39,7 @@ object Bombardier {
    * Finds weather observations for the given WeatherStation in the given time window (inclusive).
    * If there is no observation in that window, the returned Seq will be empty.
    */
-  def observationsFor(station: WeatherStation, startDateUtcMillis: Long, endDateUtcMillis: Long): Seq[Observation] = {
+  def observationsFor(station: WeatherStation, startDateUtcMillis: Long, endDateUtcMillis: Long): Future[Seq[Observation]] = {
     null
   }
 }
