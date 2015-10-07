@@ -5,7 +5,7 @@ import dispatch._, Defaults._
 import scala.concurrent.Future
 
 object Bombardier extends Bombardier {
-  val bomEndpoint = "http://reg.bom.gov.au/fwo/IDV60801/IDV60801."
+  val bomEndpoint = "http://reg.bom.gov.au/fwo/IDV60801/IDV60801"
 
   def weatherStationEndpoint(station: WeatherStation): String = {
     s"${bomEndpoint}.${station.bomUrlSuffix}.json"
