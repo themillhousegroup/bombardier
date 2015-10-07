@@ -1,9 +1,18 @@
 package com.themillhousegroup.bombardier
 
 import play.api.libs.json.{ JsValue, Json }
+import dispatch._, Defaults._
 import scala.concurrent.Future
 
-object Bombardier {
+object Bombardier extends Bombardier {
+  val bomEndpoint = "http://reg.bom.gov.au/fwo/IDV60801/IDV60801."
+
+  def weatherStationEndpoint(station: WeatherStation): String = {
+    s"${bomEndpoint}.${station.bomUrlSuffix}.json"
+  }
+}
+
+class Bombardier {
 
   /**
    * Finds weather observations for the given latitude/longitude at the given time.
