@@ -11,6 +11,7 @@ organization := "com.themillhousegroup"
 
 libraryDependencies ++= Seq(
     "com.typesafe.play"           %%  "play-json"             % "2.3.9"       % "provided",
+		"net.databinder.dispatch" 		%%  "dispatch-core" 				% "0.11.2",
     "ch.qos.logback"              %   "logback-classic"       % "1.1.3",
     "org.mockito"                 %   "mockito-all"           % "1.10.19"       % "test",
     "org.specs2"                  %%  "specs2"                % "2.3.13"      % "test"
