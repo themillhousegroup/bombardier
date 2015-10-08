@@ -2,7 +2,7 @@ package com.themillhousegroup.bombardier
 
 import play.api.libs.json.{ JsValue, Json }
 import dispatch._, Defaults._
-import scala.concurrent.Future
+import scala.concurrent.{ ExecutionContext, Future }
 
 object Bombardier extends Bombardier {
   val bomEndpoint = "http://reg.bom.gov.au/fwo/IDV60801/IDV60801"
@@ -21,9 +21,9 @@ class Bombardier {
    * If there is no observation for that exact time, the closest-in-time available
    * observation(s) are returned (as per observationsFor(WeatherStation, Long) )
    */
-  def observationsFor(latitude: Double, longitude: Double, dateUtcMillis: Long): Future[Seq[Observation]] = {
+  def observationsFor(latitude: Double, longitude: Double, dateUtcMillis: Long)(implicit ec: ExecutionContext): Future[Seq[Observation]] = {
     val closestStation = WeatherStation.byLatLong(latitude, longitude).head
-    observationsFor(closestStation, dateUtcMillis)
+    observationsFor(closestStation, dateUtcMillis)(ec)
   }
 
   /**
@@ -31,8 +31,11 @@ class Bombardier {
    * If there is no observation for that exact time, the closest-in-time available
    * observation(s) are returned
    */
-  def observationsFor(station: WeatherStation, dateUtcMillis: Long): Future[Seq[Observation]] = {
-    null
+  def observationsFor(station: WeatherStation, dateUtcMillis: Long)(implicit ec: ExecutionContext): Future[Seq[Observation]] = {
+    val req: Req = url(Bombardier.weatherStationEndpoint(station))
+    Http(req)(ec).map { response =>
+      Observations.fromJsonString(response.getResponseBody)
+    }
   }
 
   /**
