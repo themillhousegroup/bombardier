@@ -15,6 +15,16 @@ object Bombardier extends Bombardier {
 class Bombardier {
 
   /**
+   * Finds the most recent weather observation for the given latitude/longitude.
+   * The closest weather station (by numerical comparison) for the lat/long will be
+   * chosen.
+   */
+  def observationsFor(latitude: Double, longitude: Double)(implicit ec: ExecutionContext): Future[Seq[Observation]] = {
+    val closestStation = WeatherStation.byLatLong(latitude, longitude).head
+    observationsFor(closestStation, None)(ec)
+  }
+
+  /**
    * Finds weather observations for the given latitude/longitude at the given time.
    * The closest weather station (by numerical comparison) for the lat/long will be
    * chosen.
@@ -23,15 +33,16 @@ class Bombardier {
    */
   def observationsFor(latitude: Double, longitude: Double, dateUtcMillis: Long)(implicit ec: ExecutionContext): Future[Seq[Observation]] = {
     val closestStation = WeatherStation.byLatLong(latitude, longitude).head
-    observationsFor(closestStation, dateUtcMillis)(ec)
+    observationsFor(closestStation, Some(dateUtcMillis))(ec)
   }
 
   /**
-   * Finds weather observations for the given WeatherStation at the given time.
+   * Finds weather observations for the given WeatherStation at the given time (if supplied).
    * If there is no observation for that exact time, the closest-in-time available
    * observation(s) are returned
    */
-  def observationsFor(station: WeatherStation, dateUtcMillis: Long)(implicit ec: ExecutionContext): Future[Seq[Observation]] = {
+  def observationsFor(station: WeatherStation, dateUtcMillis: Option[Long])(implicit ec: ExecutionContext): Future[Seq[Observation]] = {
+    // TODO datetime filtering (if a dateUtcMillis was supplied)
     val req: Req = url(Bombardier.weatherStationEndpoint(station))
     Http(req)(ec).map { response =>
       Observations.fromJsonString(response.getResponseBody)
