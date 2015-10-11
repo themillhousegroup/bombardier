@@ -62,7 +62,7 @@ class Bombardier {
     // TODO datetime filtering (if a dateUtcMillis was supplied)
     val req: Req = url(Bombardier.weatherStationEndpoint(station))
     Http(req)(ec).map { response =>
-      Observations.fromJsonString(response.getResponseBody)
+      Observations.fromJsonString(response.getResponseBody).sortBy(_.dateTimeUtcMillis).reverse
     }
   }
 
