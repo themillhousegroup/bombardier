@@ -80,6 +80,7 @@ class Bombardier {
    * If there is no observation in that window, the returned Seq will be empty.
    */
   def observationsFor(station: WeatherStation, startDateUtcMillis: Long, endDateUtcMillis: Long): Future[Seq[Observation]] = {
-    null
+    // FIXME: Not implemented yet
+    Future.successful(Nil)
   }
 }
