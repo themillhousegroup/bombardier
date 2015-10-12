@@ -28,7 +28,7 @@ class BombardierSpec extends Specification with Mockito {
       def resp(s: String, ec: ExecutionContext): Future[Response] = {
         val mockResponse = mock[Response]
         mockResponse.getResponseBody returns responseBody
-        Future.successful(mockResponse)
+        Future(mockResponse)
       }
 
       resp
@@ -44,6 +44,16 @@ class BombardierSpec extends Specification with Mockito {
       fMaybeObs must not beNull
 
       waitFor(fMaybeObs) must beNone
+    }
+
+    "Explode if the JSON body can't be parsed" in {
+      val c = givenAClientThatReturns("{ this { is [not, valid], json }")
+
+      val b = new Bombardier(c)
+
+      val fMaybeObs = b.observationFor(w)
+
+      waitFor(fMaybeObs) must throwA[com.fasterxml.jackson.core.JsonParseException]
     }
 
   }
