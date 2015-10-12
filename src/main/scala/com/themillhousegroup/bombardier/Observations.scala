@@ -5,7 +5,11 @@ import play.api.libs.json.{ JsValue, Json }
 object Observations {
   import ObservationReads._
   def fromJsonString(jsonString: String): Seq[Observation] = {
-    fromJson(Json.parse(jsonString))
+    if (jsonString.trim.isEmpty) {
+      Nil
+    } else {
+      fromJson(Json.parse(jsonString))
+    }
   }
 
   def fromJson(json: JsValue): Seq[Observation] = {

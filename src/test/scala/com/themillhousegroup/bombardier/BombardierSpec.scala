@@ -3,15 +3,21 @@ package com.themillhousegroup.bombardier
 import org.specs2.mutable.Specification
 import org.specs2.mock.Mockito
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent._
+import scala.concurrent.duration._
 import com.ning.http.client.Response
 import play.api.libs.json._
 
 class BombardierSpec extends Specification with Mockito {
 
+  val w = WeatherStation(29167, "CENTURY MINE", "YCNY", -18.7569, 138.7056, 127, "94261", "QLD")
+
+  def waitFor[T](ft: Future[T]): T = {
+    Await.result(ft, Duration(1, "second"))
+  }
+
   "Bombardier object" should {
     "Be able to look up a JSON endpoint from a WeatherStation instance" in {
-      val w = WeatherStation(29167, "CENTURY MINE", "YCNY", -18.7569, 138.7056, 127, "94261", "QLD")
       Bombardier.weatherStationEndpoint(w) must beEqualTo("http://reg.bom.gov.au/fwo/IDV60801/IDV60801.94261.json")
     }
   }
@@ -26,6 +32,18 @@ class BombardierSpec extends Specification with Mockito {
       }
 
       resp
+    }
+
+    "Return a None if there is no JSON body" in {
+      val c = givenAClientThatReturns("")
+
+      val b = new Bombardier(c)
+
+      val fMaybeObs = b.observationFor(w)
+
+      fMaybeObs must not beNull
+
+      waitFor(fMaybeObs) must beNone
     }
 
   }

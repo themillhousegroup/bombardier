@@ -7,6 +7,14 @@ class ObservationsSpec extends Specification {
 
   "Observations" should {
 
+    "be able to parse an empty string to an empty list of Observations" in {
+      Observations.fromJsonString("") must haveLength(0)
+    }
+
+    "be able to trim a blank string to an empty list of Observations" in {
+      Observations.fromJsonString("      ") must haveLength(0)
+    }
+
     "be able to parse a full BOM JSON file" in {
       Observations.fromJsonString(fullJsonString) must haveLength(3)
     }
