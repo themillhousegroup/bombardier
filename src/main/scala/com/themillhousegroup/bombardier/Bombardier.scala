@@ -2,9 +2,10 @@ package com.themillhousegroup.bombardier
 
 import play.api.libs.json.{ JsValue, Json }
 import dispatch._, Defaults._
+import com.ning.http.client.Response
 import scala.concurrent.{ ExecutionContext, Future }
 
-object Bombardier extends Bombardier {
+object Bombardier extends Bombardier(DispatchQuery.apply) {
   val bomEndpoint = "http://reg.bom.gov.au/fwo/IDV60801/IDV60801"
 
   def weatherStationEndpoint(station: WeatherStation): String = {
@@ -12,7 +13,14 @@ object Bombardier extends Bombardier {
   }
 }
 
-class Bombardier {
+object DispatchQuery {
+  def apply(endpointUrl: String, ec: ExecutionContext): Future[Response] = {
+    val req: Req = url(endpointUrl)
+    Http(req)(ec)
+  }
+}
+
+class Bombardier(fQuery: (String, ExecutionContext) => Future[Response]) {
 
   /**
    * Finds the most recent weather observation for the given latitude/longitude.
@@ -60,8 +68,8 @@ class Bombardier {
    */
   def observationsFor(station: WeatherStation, dateUtcMillis: Option[Long] = None)(implicit ec: ExecutionContext): Future[Seq[Observation]] = {
     // TODO datetime filtering (if a dateUtcMillis was supplied)
-    val req: Req = url(Bombardier.weatherStationEndpoint(station))
-    Http(req)(ec).map { response =>
+    val endpointUrl = Bombardier.weatherStationEndpoint(station)
+    fQuery(endpointUrl, ec).map { response =>
       Observations.fromJsonString(response.getResponseBody).sortBy(_.dateTimeUtcMillis).reverse
     }
   }
