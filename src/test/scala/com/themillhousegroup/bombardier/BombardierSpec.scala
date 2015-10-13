@@ -7,6 +7,7 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import com.ning.http.client.Response
 import play.api.libs.json._
+import com.themillhousegroup.bombardier.test._
 
 class BombardierSpec extends Specification with Mockito {
 
@@ -54,6 +55,20 @@ class BombardierSpec extends Specification with Mockito {
       val fMaybeObs = b.observationFor(w)
 
       waitFor(fMaybeObs) must throwA[com.fasterxml.jackson.core.JsonParseException]
+    }
+
+    "Handle a JSON body and find the most-recent entry" in {
+      val c = givenAClientThatReturns(JsonFixtures.fullJsonString)
+
+      val b = new Bombardier(c)
+
+      val fMaybeObs = b.observationFor(w)
+
+      val obs = waitFor(fMaybeObs)
+
+      obs must beSome[Observation]
+
+      obs.get.dateTimeUtcMillis must beEqualTo(20151002103000L)
     }
 
   }
