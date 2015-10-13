@@ -35,10 +35,13 @@ class BombardierSpec extends Specification with Mockito {
       resp
     }
 
-    "Return a None if there is no JSON body" in {
-      val c = givenAClientThatReturns("")
+    def givenABombardierThatReturns(responseBody: String): Bombardier = {
+      val c = givenAClientThatReturns(responseBody)
+      new Bombardier(c)
+    }
 
-      val b = new Bombardier(c)
+    "Return a None if there is no JSON body" in {
+      val b = givenABombardierThatReturns("")
 
       val fMaybeObs = b.observationFor(w)
 
@@ -48,21 +51,29 @@ class BombardierSpec extends Specification with Mockito {
     }
 
     "Explode if the JSON body can't be parsed" in {
-      val c = givenAClientThatReturns("{ this { is [not, valid], json }")
-
-      val b = new Bombardier(c)
+      val b = givenABombardierThatReturns("{ this { is [not, valid], json }")
 
       val fMaybeObs = b.observationFor(w)
 
       waitFor(fMaybeObs) must throwA[com.fasterxml.jackson.core.JsonParseException]
     }
 
-    "Handle a JSON body and find the most-recent entry" in {
-      val c = givenAClientThatReturns(JsonFixtures.fullJsonString)
-
-      val b = new Bombardier(c)
+    "Handle a JSON body and find the most-recent entry when given a WeatherStation" in {
+      val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
 
       val fMaybeObs = b.observationFor(w)
+
+      val obs = waitFor(fMaybeObs)
+
+      obs must beSome[Observation]
+
+      obs.get.dateTimeUtcMillis must beEqualTo(20151002103000L)
+    }
+
+    "Handle a JSON body and find the most-recent entry when given a lat/long" in {
+      val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
+
+      val fMaybeObs = b.observationFor(-34.5D, 145.677D)
 
       val obs = waitFor(fMaybeObs)
 
