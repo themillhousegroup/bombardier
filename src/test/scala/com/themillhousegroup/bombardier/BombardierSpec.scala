@@ -94,5 +94,41 @@ class BombardierSpec extends Specification with Mockito {
       obs.get.dateTimeUtcMillis must beEqualTo(20151002093000L)
     }
 
+    "Find the desired observation given a WeatherStation and an non-exact-match time (very close)" in {
+      val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
+
+      val fMaybeObs = b.observationFor(w, Some(20151002093001L))
+
+      val obs = waitFor(fMaybeObs)
+
+      obs must beSome[Observation]
+
+      obs.get.dateTimeUtcMillis must beEqualTo(20151002093000L)
+    }
+
+    "Find the desired observation given a WeatherStation and an non-exact-match time (bisecting)" in {
+      val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
+
+      val fMaybeObs = b.observationFor(w, Some(20151002101500L)) // Exactly in between two observations, should pick the earlier
+
+      val obs = waitFor(fMaybeObs)
+
+      obs must beSome[Observation]
+
+      obs.get.dateTimeUtcMillis must beEqualTo(20151002100000L)
+    }
+
+    "Find the desired observation given a WeatherStation and an non-exact-match time (not close)" in {
+      val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
+
+      val fMaybeObs = b.observationFor(w, Some(20161002093000L)) // A year into the future, therefore newest observation wins
+
+      val obs = waitFor(fMaybeObs)
+
+      obs must beSome[Observation]
+
+      obs.get.dateTimeUtcMillis must beEqualTo(20151002103000L)
+    }
+
   }
 }

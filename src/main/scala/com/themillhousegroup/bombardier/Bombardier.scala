@@ -45,9 +45,18 @@ class Bombardier(fQuery: (String, ExecutionContext) => Future[Response]) {
       val obs = Observations.fromJsonString(response.getResponseBody).sortBy(_.dateTimeUtcMillis)
 
       dateUtcMillis.fold(obs.lastOption) { date =>
-        obs.find(_.dateTimeUtcMillis == date)
+        findExactMatchDate(obs, date).orElse(findClosestMatchDate(obs, date))
       }
     }
+  }
+
+  private def findExactMatchDate(obs: Seq[Observation], date: Long): Option[Observation] = obs.find(_.dateTimeUtcMillis == date)
+
+  private def findClosestMatchDate(obs: Seq[Observation], date: Long): Option[Observation] = {
+    def distanceToDate(o: Observation) = Math.abs(date - o.dateTimeUtcMillis)
+    obs.sortWith((a, b) =>
+      distanceToDate(a) < distanceToDate(b)
+    ).headOption
   }
 
   /**
