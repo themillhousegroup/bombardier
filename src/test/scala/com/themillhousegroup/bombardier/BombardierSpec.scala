@@ -73,13 +73,25 @@ class BombardierSpec extends Specification with Mockito {
     "Handle a JSON body and find the most-recent entry when given a lat/long" in {
       val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
 
-      val fMaybeObs = b.observationFor(-34.5D, 145.677D)
+      val fMaybeObs = b.observationForLatLong(-34.5D, 145.677D)
 
       val obs = waitFor(fMaybeObs)
 
       obs must beSome[Observation]
 
       obs.get.dateTimeUtcMillis must beEqualTo(20151002103000L)
+    }
+
+    "Find the desired observation given a WeatherStation and an exact-match time" in {
+      val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
+
+      val fMaybeObs = b.observationFor(w, Some(20151002093000L))
+
+      val obs = waitFor(fMaybeObs)
+
+      obs must beSome[Observation]
+
+      obs.get.dateTimeUtcMillis must beEqualTo(20151002093000L)
     }
 
   }
