@@ -4,6 +4,7 @@ import play.api.libs.json.{ JsValue, Json }
 import dispatch._, Defaults._
 import com.ning.http.client.Response
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.collection.immutable.NumericRange
 
 object Bombardier extends Bombardier(DispatchQuery.apply) {
   val bomEndpoint = "http://reg.bom.gov.au/fwo/IDV60801/IDV60801"
@@ -63,16 +64,16 @@ class Bombardier(fQuery: (String, ExecutionContext) => Future[Response]) {
    * Finds weather observations for the given latitude/longitude in the given time window (inclusive).
    * If there is no observation in that window, the returned Seq will be empty.
    */
-  def observationsForLatLong(latitude: Double, longitude: Double, startDateUtcMillis: Long, endDateUtcMillis: Long): Future[Seq[Observation]] = {
+  def observationsForLatLong(latitude: Double, longitude: Double, utcDateRange: NumericRange[Long]): Future[Seq[Observation]] = {
     val closestStation = WeatherStation.byLatLong(latitude, longitude).head
-    observationsFor(closestStation, startDateUtcMillis, endDateUtcMillis)
+    observationsFor(closestStation, utcDateRange)
   }
 
   /**
    * Finds weather observations for the given WeatherStation in the given time window (inclusive).
    * If there is no observation in that window, the returned Seq will be empty.
    */
-  def observationsFor(station: WeatherStation, startDateUtcMillis: Long, endDateUtcMillis: Long): Future[Seq[Observation]] = {
+  def observationsFor(station: WeatherStation, utcDateRange: NumericRange[Long]): Future[Seq[Observation]] = {
     // FIXME: Not implemented yet
     Future.successful(Nil)
   }
