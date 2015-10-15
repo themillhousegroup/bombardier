@@ -131,29 +131,24 @@ class BombardierSpec extends Specification with Mockito {
       obs.get.dateTimeUtcMillis must beEqualTo(20151002103000L)
     }
 
-    "Find the no observations given a WeatherStation and an inapplicable time-range" in {
+    "Find no observations given a WeatherStation and an inapplicable time-range" in {
       val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
 
-      val fMaybeObs = b.observationFor(w, NumericRange(20161002093000L, 20161002103000L)) // A year into the future, therefore newest observation wins
+      val fMaybeObs = b.observationsFor(w, 20161002093000L to 20161002103000L) // A year into the future, therefore no matches
 
       val obs = waitFor(fMaybeObs)
 
-      obs must beSome[Observation]
-
-      obs.get.dateTimeUtcMillis must beEqualTo(20151002103000L)
+      obs must beEmpty
     }
 
-    "Find the desired observation given a WeatherStation and an time-range" in {
+    "Find observations given a WeatherStation and an applicable time-range" in {
       val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
 
-      val fMaybeObs = b.observationFor(w, Some(20161002093000L)) // A year into the future, therefore newest observation wins
+      val fMaybeObs = b.observationsFor(w, 20151002093000L to 20151002103000L) // Should find 2 of the 3 entries 
 
       val obs = waitFor(fMaybeObs)
 
-      obs must beSome[Observation]
-
-      obs.get.dateTimeUtcMillis must beEqualTo(20151002103000L)
+      obs must not beEmpty
     }
-
   }
 }
