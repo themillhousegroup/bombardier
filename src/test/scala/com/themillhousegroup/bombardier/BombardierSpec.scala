@@ -8,6 +8,7 @@ import scala.concurrent.duration._
 import com.ning.http.client.Response
 import play.api.libs.json._
 import com.themillhousegroup.bombardier.test._
+import scala.collection.immutable.NumericRange
 
 class BombardierSpec extends Specification with Mockito {
 
@@ -119,6 +120,30 @@ class BombardierSpec extends Specification with Mockito {
     }
 
     "Find the desired observation given a WeatherStation and an non-exact-match time (not close)" in {
+      val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
+
+      val fMaybeObs = b.observationFor(w, Some(20161002093000L)) // A year into the future, therefore newest observation wins
+
+      val obs = waitFor(fMaybeObs)
+
+      obs must beSome[Observation]
+
+      obs.get.dateTimeUtcMillis must beEqualTo(20151002103000L)
+    }
+
+    "Find the no observations given a WeatherStation and an inapplicable time-range" in {
+      val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
+
+      val fMaybeObs = b.observationFor(w, NumericRange(20161002093000L, 20161002103000L)) // A year into the future, therefore newest observation wins
+
+      val obs = waitFor(fMaybeObs)
+
+      obs must beSome[Observation]
+
+      obs.get.dateTimeUtcMillis must beEqualTo(20151002103000L)
+    }
+
+    "Find the desired observation given a WeatherStation and an time-range" in {
       val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
 
       val fMaybeObs = b.observationFor(w, Some(20161002093000L)) // A year into the future, therefore newest observation wins
