@@ -144,11 +144,13 @@ class BombardierSpec extends Specification with Mockito {
     "Find observations given a WeatherStation and an applicable time-range" in {
       val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
 
-      val fMaybeObs = b.observationsFor(w, 20151002093000L to 20151002103000L) // Should find 2 of the 3 entries 
+      val fMaybeObs = b.observationsFor(w, 20151002003000L to 20151002102000L) // Should find 2 of the 3 entries 
 
       val obs = waitFor(fMaybeObs)
 
       obs must not beEmpty
+
+      obs must haveLength(2)
     }
   }
 }

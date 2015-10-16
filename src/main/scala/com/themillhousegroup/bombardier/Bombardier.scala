@@ -63,18 +63,28 @@ class Bombardier(fQuery: (String, ExecutionContext) => Future[Response]) {
   /**
    * Finds weather observations for the given latitude/longitude in the given time window (inclusive).
    * If there is no observation in that window, the returned Seq will be empty.
+   * The observations will be in ascending time order (i.e. the same order that the range was specified in)
    */
-  def observationsForLatLong(latitude: Double, longitude: Double, utcDateRange: NumericRange[Long]): Future[Seq[Observation]] = {
+  def observationsForLatLong(latitude: Double, longitude: Double, utcDateRange: NumericRange[Long])(implicit ec: ExecutionContext): Future[Seq[Observation]] = {
     val closestStation = WeatherStation.byLatLong(latitude, longitude).head
-    observationsFor(closestStation, utcDateRange)
+    observationsFor(closestStation, utcDateRange)(ec)
   }
 
   /**
    * Finds weather observations for the given WeatherStation in the given time window (inclusive).
    * If there is no observation in that window, the returned Seq will be empty.
+   * The observations will be in ascending time order (i.e. the same order that the range was specified in)
    */
-  def observationsFor(station: WeatherStation, utcDateRange: NumericRange[Long]): Future[Seq[Observation]] = {
-    // FIXME: Not implemented yet
-    Future.successful(Nil)
+  def observationsFor(station: WeatherStation, utcDateRange: NumericRange[Long])(implicit ec: ExecutionContext): Future[Seq[Observation]] = {
+
+    val endpointUrl = Bombardier.weatherStationEndpoint(station)
+    fQuery(endpointUrl, ec).map { response =>
+      val obs = Observations.fromJsonString(response.getResponseBody).sortBy(_.dateTimeUtcMillis)
+      obs.foreach { ob =>
+        println(s"range min is   ${utcDateRange.start}, max is ${utcDateRange.end}")
+        println(s"range contains ${ob.dateTimeUtcMillis}         ${ob.dateTimeUtcMillis}: ${utcDateRange.contains(ob.dateTimeUtcMillis)}")
+      }
+      obs.filter(ob => utcDateRange.contains(ob.dateTimeUtcMillis))
+    }
   }
 }
