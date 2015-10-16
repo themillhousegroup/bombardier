@@ -79,12 +79,8 @@ class Bombardier(fQuery: (String, ExecutionContext) => Future[Response]) {
 
     val endpointUrl = Bombardier.weatherStationEndpoint(station)
     fQuery(endpointUrl, ec).map { response =>
-      val obs = Observations.fromJsonString(response.getResponseBody).sortBy(_.dateTimeUtcMillis)
-      obs.foreach { ob =>
-        println(s"range min is   ${utcDateRange.start}, max is ${utcDateRange.end}")
-        println(s"range contains ${ob.dateTimeUtcMillis}         ${ob.dateTimeUtcMillis}: ${utcDateRange.contains(ob.dateTimeUtcMillis)}")
-      }
-      obs.filter(ob => utcDateRange.contains(ob.dateTimeUtcMillis))
+      val obs = Observations.fromJsonString(response.getResponseBody)
+      obs.filter(ob => utcDateRange.contains(ob.dateTimeUtcMillis)).sortBy(_.dateTimeUtcMillis)
     }
   }
 }

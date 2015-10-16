@@ -152,5 +152,17 @@ class BombardierSpec extends Specification with Mockito {
 
       obs must haveLength(2)
     }
+
+    "Find observations given a WeatherStation and an applicable time-range in correct ascending order" in {
+      val b = givenABombardierThatReturns(JsonFixtures.fullJsonString)
+
+      val fMaybeObs = b.observationsFor(w, 20151002003000L to 20151002102000L) // Should find 2 of the 3 entries 
+
+      val obs = waitFor(fMaybeObs)
+
+      obs must haveLength(2)
+
+      obs.head.dateTimeUtcMillis must beLessThan(obs.last.dateTimeUtcMillis)
+    }
   }
 }
