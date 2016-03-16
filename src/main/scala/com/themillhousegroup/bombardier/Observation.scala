@@ -43,7 +43,7 @@ object ObservationReads {
 /**
  * Represents an observation from a BOM weather station
  */
-case class Observation(
+final case class Observation(
   dateTimeUtcMillis: Long,
   apparentTemperature: Option[Double],
   cloud: String,

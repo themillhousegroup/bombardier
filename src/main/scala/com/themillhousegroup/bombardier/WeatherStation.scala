@@ -54,7 +54,7 @@ object WeatherStation {
  * Represents a BOM weather station that can
  * supply weather observation data.
  */
-case class WeatherStation(
+final case class WeatherStation(
   id: Int,
   name: String,
   code: String,
